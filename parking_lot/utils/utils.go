@@ -3,7 +3,7 @@ package utils
 import "time"
 
 const (
-	COMMA = ","
+	SPACE = " "
 )
 
 //CurrentTimeInMilli returns current system time in milli sec from epoch
