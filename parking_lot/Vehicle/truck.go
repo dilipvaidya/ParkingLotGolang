@@ -1,7 +1,7 @@
 package vehicle
 
 import (
-	ticket "../ticketservice"
+	ticket "github.com/ParkingLotGolang/parking_lot/ticketservice"
 )
 
 // Truck type Vehicle

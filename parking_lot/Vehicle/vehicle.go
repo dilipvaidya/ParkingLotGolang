@@ -1,6 +1,8 @@
 package vehicle
 
-import ticket "../ticketservice"
+import (
+	ticket "github.com/ParkingLotGolang/parking_lot/ticketservice"
+)
 
 type Type int
 
