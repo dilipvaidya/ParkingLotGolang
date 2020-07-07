@@ -2,6 +2,7 @@ package parkingservice
 
 import (
 	"errors"
+	"fmt"
 	"sync"
 
 	slot "github.com/ParkingLotGolang/parking_lot/parkingslot"
@@ -68,11 +69,12 @@ func (p *ParkingService) CheckInNewVehicle(licenseNumber string, color string) e
 	v := vehicle.GetNewVehicle(licenseNumber, color, t)
 
 	sltNum, err := p.GetNextFreeParkingSlot()
-	if err != nil {
+	if nil != err {
 		return err
 	}
 
 	// allocate slot for current vehicle
+
 	p.slotVehicleAllocation[sltNum] = v
 	p.vehicleToSlotAllocation[licenseNumber] = sltNum
 	return nil
@@ -81,9 +83,11 @@ func (p *ParkingService) CheckInNewVehicle(licenseNumber string, color string) e
 // CheckOutVehicle checks in new vehicle, done slot reservation and ticket generation.
 func (p *ParkingService) CheckOutVehicle(sltNum int) error {
 
-	v := p.slotVehicleAllocation[sltNum]
+	if v, ok := p.slotVehicleAllocation[sltNum]; ok {
+		delete(p.vehicleToSlotAllocation, v.GetVehicleRegistrationNumber())
+	}
+
 	delete(p.slotVehicleAllocation, sltNum)
-	delete(p.vehicleToSlotAllocation, v.GetVehicleRegistrationNumber())
 	p.FreeParkingSlot(sltNum)
 
 	return nil
@@ -103,6 +107,7 @@ func (p *ParkingService) GetSlotAllocationMap() TypeSlotAllocationMap {
 func (p *ParkingService) GetNextFreeParkingSlot() (int, error) {
 	for i := 0; i < p.GetNumberOfSlots(); i++ {
 		if p.GetSlotAllocationMap()[i].GetSlotStatus() == slot.Free {
+			p.GetSlotAllocationMap()[i].SetSlotStatus(slot.Occupied)
 			return i, nil
 		}
 	}
@@ -118,4 +123,12 @@ func (p *ParkingService) FreeParkingSlot(slotNumber int) error {
 		}
 	}
 	return errors.New(errslotnotfound)
+}
+
+// DisplayParkingStatus displays parking status on stdio so be carefull
+func (p *ParkingService) DisplayParkingStatus() {
+	fmt.Printf("Slot No.\tRegistration No\tColour\n")
+	for slot, vehicle := range p.slotVehicleAllocation {
+		fmt.Printf("    %d\t\t%s\t%s\n", slot, vehicle.GetVehicleRegistrationNumber(), vehicle.GetVehicleColor())
+	}
 }
