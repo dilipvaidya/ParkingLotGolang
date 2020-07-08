@@ -62,21 +62,14 @@ $ ./parking_lot/bin/setup
 Password:
 glde installation failed
 cd /Users/dilip/codebase/go/src/github.com/ParkingLotGolang ; CGO_ENABLED=0 go build -o /Users/dilip/codebase/go/src/github.com/ParkingLotGolang/parking_lot/bin/parking_lot /Users/dilip/codebase/go/src/github.com/ParkingLotGolang/main.go
-cd /Users/dilip/codebase/go/src/github.com/ParkingLotGolang ; go test github.com/ParkingLotGolang github.com/ParkingLotGolang/parking_lot/commandservice github.com/ParkingLotGolang/parking_lot/parkingservice github.com/ParkingLotGolang/parking_lot/parkingslot github.com/ParkingLotGolang/parking_lot/ticketservice github.com/ParkingLotGolang/parking_lot/utils github.com/ParkingLotGolang/parking_lot/vehicle github.com/ParkingLotGolang/parking_lot_backuup github.com/ParkingLotGolang/parking_lot_backuup/commandservice github.com/ParkingLotGolang/parking_lot_backuup/parkingservice github.com/ParkingLotGolang/parking_lot_backuup/parkingslot github.com/ParkingLotGolang/parking_lot_backuup/ticketservice github.com/ParkingLotGolang/parking_lot_backuup/utils github.com/ParkingLotGolang/parking_lot_backuup/vehicle  -coverprofile cover.out
-?       github.com/ParkingLotGolang     [no test files]
-?       github.com/ParkingLotGolang/parking_lot/commandservice  [no test files]
-ok      github.com/ParkingLotGolang/parking_lot/parkingservice  0.294s  coverage: 54.5% of statements
-?       github.com/ParkingLotGolang/parking_lot/parkingslot     [no test files]
-?       github.com/ParkingLotGolang/parking_lot/ticketservice   [no test files]
-?       github.com/ParkingLotGolang/parking_lot/utils   [no test files]
-?       github.com/ParkingLotGolang/parking_lot/vehicle [no test files]
-?       github.com/ParkingLotGolang/parking_lot_backuup [no test files]
-?       github.com/ParkingLotGolang/parking_lot_backuup/commandservice  [no test files]
-?       github.com/ParkingLotGolang/parking_lot_backuup/parkingservice  [no test files]
-?       github.com/ParkingLotGolang/parking_lot_backuup/parkingslot     [no test files]
-?       github.com/ParkingLotGolang/parking_lot_backuup/ticketservice   [no test files]
-?       github.com/ParkingLotGolang/parking_lot_backuup/utils   [no test files]
-?       github.com/ParkingLotGolang/parking_lot_backuup/vehicle [no test files]
+cd /Users/dilip/codebase/go/src/github.com/ParkingLotGolang ; go test github.com/ParkingLotGolang github.com/ParkingLotGolang/parking_lot/commandservice github.com/ParkingLotGolang/parking_lot/parkingservice github.com/ParkingLotGolang/parking_lot/parkingslot github.com/ParkingLotGolang/parking_lot/ticketservice github.com/ParkingLotGolang/parking_lot/utils github.com/ParkingLotGolang/parking_lot/vehicle  -coverprofile cover.out
+?   	github.com/ParkingLotGolang	[no test files]
+?   	github.com/ParkingLotGolang/parking_lot/commandservice	[no test files]
+ok  	github.com/ParkingLotGolang/parking_lot/parkingservice	1.321s	coverage: 54.5% of statements
+?   	github.com/ParkingLotGolang/parking_lot/parkingslot	[no test files]
+?   	github.com/ParkingLotGolang/parking_lot/ticketservice	[no test files]
+?   	github.com/ParkingLotGolang/parking_lot/utils	[no test files]
+ok  	github.com/ParkingLotGolang/parking_lot/vehicle	1.581s	coverage: 25.0% of statements
 ```
 
 - Execute Sample
