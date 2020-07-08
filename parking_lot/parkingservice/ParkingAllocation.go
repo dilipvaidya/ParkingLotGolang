@@ -3,13 +3,14 @@ package parkingservice
 import (
 	"errors"
 	"fmt"
+	"sort"
 	"strings"
 	"sync"
 
 	slot "github.com/ParkingLotGolang/parking_lot/parkingslot"
 	ticket "github.com/ParkingLotGolang/parking_lot/ticketservice"
 	utils "github.com/ParkingLotGolang/parking_lot/utils"
-	"github.com/ParkingLotGolang/parking_lot/vehicle"
+	vehicle "github.com/ParkingLotGolang/parking_lot/vehicle"
 )
 
 // SlotAllocationError enum holds all the slot allocation de-allocation related errors
@@ -44,6 +45,9 @@ type ParkingService struct {
 // CreateParking singletone method to create parking with slots.
 func CreateParking(totalNumberOfSlots int) *ParkingService {
 
+	if totalNumberOfSlots < 0 {
+		return nil
+	}
 	once.Do(func() {
 		parking = &ParkingService{
 			numberOfSlots:           totalNumberOfSlots + 1,
@@ -61,7 +65,7 @@ func CreateParking(totalNumberOfSlots int) *ParkingService {
 
 // GetNumberOfSlots return the number of slots in the Parking
 func (p *ParkingService) GetNumberOfSlots() int {
-	return p.numberOfSlots
+	return p.numberOfSlots - 1
 }
 
 // GetSlotAllocationMap returns slot allocation map
@@ -69,10 +73,20 @@ func (p *ParkingService) GetSlotAllocationMap() TypeSlotAllocationMap {
 	return p.slotAllocation
 }
 
+// GetSlotVehicleAllocation returns slot allocation map
+func (p *ParkingService) GetSlotVehicleAllocation() TypeSlotVehicleAllocationMap {
+	return p.slotVehicleAllocation
+}
+
+// GetVehicleToSlotAllocation returns slot allocation map
+func (p *ParkingService) GetVehicleToSlotAllocation() TypeCheckedInVehiclesMap {
+	return p.vehicleToSlotAllocation
+}
+
 // CheckInNewVehicle checks in new vehicle, done slot reservation and ticket generation.
 func (p *ParkingService) CheckInNewVehicle(licenseNumber string, color string, vehicleType vehicle.Type) error {
 
-	if _, ok := p.vehicleToSlotAllocation[licenseNumber]; ok {
+	if _, ok := p.GetVehicleToSlotAllocation()[licenseNumber]; ok {
 		return errors.New("Vehicle already checked in")
 	}
 
@@ -87,8 +101,8 @@ func (p *ParkingService) CheckInNewVehicle(licenseNumber string, color string, v
 
 	// allocate slot for current vehicle
 
-	p.slotVehicleAllocation[sltNum] = v
-	p.vehicleToSlotAllocation[licenseNumber] = sltNum
+	p.GetSlotVehicleAllocation()[sltNum] = v
+	p.GetVehicleToSlotAllocation()[licenseNumber] = sltNum
 	fmt.Println("Allocated slot number: ", sltNum)
 	return nil
 }
@@ -101,18 +115,18 @@ func (p *ParkingService) CheckOutVehicle(sltNum int) error {
 		return err
 	}
 
-	if v, ok := p.slotVehicleAllocation[sltNum]; ok {
-		delete(p.vehicleToSlotAllocation, v.GetVehicleRegistrationNumber())
+	if v, ok := p.GetSlotVehicleAllocation()[sltNum]; ok {
+		delete(p.GetVehicleToSlotAllocation(), v.GetVehicleRegistrationNumber())
 	}
 
-	delete(p.slotVehicleAllocation, sltNum)
+	delete(p.GetSlotVehicleAllocation(), sltNum)
 	fmt.Printf("Slot number %d is free\n", sltNum)
 	return nil
 }
 
 // GetNextFreeParkingSlot return the Next Free Slot to be allocated by the car
 func (p *ParkingService) GetNextFreeParkingSlot() (int, error) {
-	for i := 1; i < p.GetNumberOfSlots(); i++ {
+	for i := 1; i <= p.GetNumberOfSlots(); i++ {
 		if p.GetSlotAllocationMap()[i].GetSlotStatus() == slot.Free {
 			p.GetSlotAllocationMap()[i].SetSlotStatus(slot.Occupied)
 			return i, nil
@@ -138,8 +152,8 @@ func (p *ParkingService) FreeParkingSlot(slotNumber int) error {
 // DisplayParkingStatus displays parking status on stdio so be carefull
 func (p *ParkingService) DisplayParkingStatus() {
 	fmt.Printf("Slot No.\tRegistration No\tColour\n")
-	for i := 1; i < p.GetNumberOfSlots(); i++ {
-		if vehicle, ok := p.slotVehicleAllocation[i]; ok {
+	for i := 1; i <= p.GetNumberOfSlots(); i++ {
+		if vehicle, ok := p.GetSlotVehicleAllocation()[i]; ok {
 			fmt.Printf("    %d\t\t%s\t%s\n", i, vehicle.GetVehicleRegistrationNumber(), vehicle.GetVehicleColor())
 		}
 	}
@@ -149,7 +163,7 @@ func (p *ParkingService) DisplayParkingStatus() {
 func (p *ParkingService) GetSlotForVehicleColor(color string) ([]int, error) {
 	var slots []int
 
-	for slt, v := range p.slotVehicleAllocation {
+	for slt, v := range p.GetSlotVehicleAllocation() {
 		if p.GetSlotAllocationMap()[slt].GetSlotStatus() == slot.Occupied &&
 			strings.Compare(v.GetVehicleColor(), color) == 0 {
 			slots = append(slots, slt)
@@ -159,6 +173,7 @@ func (p *ParkingService) GetSlotForVehicleColor(color string) ([]int, error) {
 	if len(slots) == 0 {
 		return nil, errors.New("Not found")
 	}
+	sort.Ints(slots[:])
 	return slots, nil
 }
 
@@ -166,7 +181,7 @@ func (p *ParkingService) GetSlotForVehicleColor(color string) ([]int, error) {
 func (p *ParkingService) GetCarsRegistrationNumberWithColor(color string) ([]string, error) {
 	var regStr []string
 
-	for slt, v := range p.slotVehicleAllocation {
+	for slt, v := range p.GetSlotVehicleAllocation() {
 		if p.GetSlotAllocationMap()[slt].GetSlotStatus() == slot.Occupied &&
 			strings.Compare(v.GetVehicleColor(), color) == 0 {
 			regStr = append(regStr, v.GetVehicleRegistrationNumber())
@@ -176,13 +191,14 @@ func (p *ParkingService) GetCarsRegistrationNumberWithColor(color string) ([]str
 	if len(regStr) == 0 {
 		return nil, errors.New("Not found")
 	}
+	sort.Strings(regStr[:])
 	return regStr, nil
 }
 
 // GetSlotForRegistrationNumber returns slot number for specified vehicle registration number
 func (p *ParkingService) GetSlotForRegistrationNumber(regNumber string) (int, error) {
 
-	if slotNumber, ok := p.vehicleToSlotAllocation[regNumber]; ok {
+	if slotNumber, ok := p.GetVehicleToSlotAllocation()[regNumber]; ok {
 		return slotNumber, nil
 	}
 	return -1, errors.New("Not found")

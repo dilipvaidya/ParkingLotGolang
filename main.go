@@ -9,9 +9,14 @@ import (
 	"github.com/ParkingLotGolang/parking_lot/commandservice"
 )
 
+const (
+	exitCommand = "exit"
+)
+
 func main() {
 	var scanner *bufio.Scanner
 
+	// get scanner to either scan commands from command line or from input file.
 	switch len(os.Args) {
 
 	case 1: //set scanner to read from stdio
@@ -29,9 +34,10 @@ func main() {
 		scanner = nil
 	}
 
+	// inifinite loop until exit command
 	for scanner.Scan() {
 		nextCommandString := scanner.Text()
-		if strings.Compare(nextCommandString, "exit") == 0 {
+		if strings.Compare(nextCommandString, exitCommand) == 0 {
 			break
 		} else {
 			commandservice.ExecuteCommand(nextCommandString)

@@ -1,0 +1,27 @@
+# Add script to:
+# * Install dependencies
+# * Build/Compile
+# * Run Test Suit to validate
+#
+# After this is run, bin/parking_lot
+# should Just Work.
+
+
+# install glide for package management
+if [ -f /usr/bin/curl ];
+then
+    sudo curl https://glide.sh/get | sh
+    if [ "$?" -eq "0" ];
+    then
+        make
+    else
+        echo "glde installation failed"
+        make build test
+    fi
+else 
+    # if we are failing tto install glide, simply build and test code
+    echo "not installing glide"
+    make build test
+fi
+
+ 
