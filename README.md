@@ -1,5 +1,6 @@
 # ParkingLotGolang
-This is the 
+This is the solution to the automated parking system implemented in Go lang.
+
 ## Problem Statement
 
 I own a parking lot that can hold up to 'n' cars at any given point in time. Each slot is given a number starting at 1 increasing with increasing distance from the entry point in steps of one. I want to create an automated ticketing system that allows my customers to use my parking lot without human intervention.
@@ -49,7 +50,7 @@ make test #will run test cases
 ```
 2. Automated execution as per commands mentioned in the file
 ```bash
-./parking_lot/bin/parking_lot optional files input command
+./parking_lot/bin/parking_lot [optional_file_input_command]
 ```
 
 ###### Sample output
