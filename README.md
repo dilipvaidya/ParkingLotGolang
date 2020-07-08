@@ -43,7 +43,7 @@ make build #build the code
 make test #will run test cases
 ```
 
-###### How to execute
+#### How to execute
 1. Interactive execution 
 ```bash
 ./parking_lot/bin/parking_lot
@@ -53,7 +53,7 @@ make test #will run test cases
 ./parking_lot/bin/parking_lot [optional_file_input_command]
 ```
 
-###### Sample output
+#### Sample output
 Note: following example shows case of glide installation interupted with CTRL+C when prompted for password.
 
 - Build Sample
@@ -95,3 +95,21 @@ KA-01-HH-1234, KA-01-HH-9999, KA-01-P-333
 6
 Not found
 ```
+
+#### Future addition planned
+Current solution is minimal viable solution to start ahead with. Following feattures are throught at the time of design and application can be easily extended to address those.
+
+##### functional features
+1. Backing up parking allocation onto the persistant datastore to avoid datta loss in case of system down due to any reason.
+2. Add new/Delet existing parking slots to the existing parking
+3. Payment charges calculation
+⋅⋅1. Default charges for initial default hours of parking
+⋅⋅2. changes calculation as per number of hours parking is extented
+⋅⋅3. Discounts / Different charges depend on slot type (ex: handicapped people, national heros)
+4. QR code of the direction on ticket to help people reach the correct parking slot
+5. Advanced booking of the parking with advanced payment with limited waiting time before reallocation
+6. Multi storey parking - add/delete storeys; multi-building parking - add/delette buildings
+
+##### technical features
+1. More syncronization in check In and check out operations.
+2. More commands as per new functional features like calculate prize, add discount at runtime etc.
