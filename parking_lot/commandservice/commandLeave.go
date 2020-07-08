@@ -60,7 +60,7 @@ func (p *CommandLeave) ExecuteCommand() error {
 	pkService := parkingservice.CreateParking(0) // won't be created as its singleton class
 	err := pkService.CheckOutVehicle(p.GetSlotToCheckOut())
 	if nil != err {
-		return errors.New(err.Error())
+		return err
 	}
 	return nil
 }

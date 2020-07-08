@@ -12,32 +12,39 @@ const (
 )
 
 // Vehicle parent class
-type Vehicle struct {
-	RegistrationNumber string
-	color              string
-	Ticket             *ticket.Ticket
+type Vehicle interface {
+	GetVehicleRegistrationNumber() string
+	GetVehicleColor() string
+	GetTicketDetails() *ticket.Ticket
+	GetVehicleType() Type
 }
 
 // GetNewVehicle gives Vehicle object of car type.
-func GetNewVehicle(registrationNum string, carColor string, t *ticket.Ticket) *Vehicle {
-	return &Vehicle{
-		RegistrationNumber: registrationNum,
-		color:              carColor,
-		Ticket:             t,
+func GetNewVehicle(registrationNum string, color string, ticket *ticket.Ticket, vehicleType Type) Vehicle {
+
+	switch vehicleType {
+	case VehicleTypeCar:
+		return &Car{
+			vehicleType:        VehicleTypeCar,
+			registrationNumber: registrationNum,
+			color:              color,
+			ticket:             ticket,
+		}
+
+	case VehicleTypeTruck:
+		return &Truck{
+			vehicleType:        VehicleTypeTruck,
+			registrationNumber: registrationNum,
+			color:              color,
+			ticket:             ticket,
+		}
 	}
-}
 
-// GetVehicleRegistrationNumber returns car's reg num
-func (v *Vehicle) GetVehicleRegistrationNumber() string {
-	return v.RegistrationNumber
-}
-
-// GetVehicleColor return color of the Car
-func (v *Vehicle) GetVehicleColor() string {
-	return v.color
-}
-
-// GetTicketDetails return color of the Car
-func (v *Vehicle) GetTicketDetails() *ticket.Ticket {
-	return v.Ticket
+	// default add vehicle as of type car
+	return &Car{
+		vehicleType:        VehicleTypeCar,
+		registrationNumber: registrationNum,
+		color:              color,
+		ticket:             ticket,
+	}
 }

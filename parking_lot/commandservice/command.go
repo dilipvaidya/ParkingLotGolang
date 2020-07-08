@@ -35,8 +35,14 @@ func getCommand(commandLine []string) Command {
 		return Status(commandLine)
 
 	case "registration_numbers_for_cars_with_colour":
+		return CarsWithColor(commandLine)
+
 	case "slot_numbers_for_cars_with_colour":
+		return SlotWithVehicleColor(commandLine)
+
 	case "slot_number_for_registration_number":
+		return SlotForReg(commandLine)
+
 	default:
 		fmt.Printf(err002, commandLine[0])
 		return nil

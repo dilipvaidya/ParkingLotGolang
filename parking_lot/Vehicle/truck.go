@@ -6,29 +6,39 @@ import (
 
 // Truck type Vehicle
 type Truck struct {
-	*Vehicle
-	vehicleType Type
+	Vehicle
+	vehicleType        Type
+	registrationNumber string
+	color              string
+	ticket             *ticket.Ticket
 }
 
-// GetNewTruck gives Vehicle object of Truck type.
-func GetNewTruck(registrationNum string, TruckColor string, ticket *ticket.Ticket) *Truck {
-	var t Truck
-	t.Vehicle = GetNewVehicle(registrationNum, TruckColor, ticket)
-	t.vehicleType = VehicleTypeTruck
-	return &t
-}
+// GetNewVehicle gives Vehicle object of Truck type.
+/*func GetNewVehicle(registrationNum string, truckColor string, ticket *ticket.Ticket) Vehicle {
+	return &Truck{
+		vehicleType:        VehicleTypeTruck,
+		registrationNumber: registrationNum,
+		color:              truckColor,
+		ticket:             ticket,
+	}
+}*/
 
 // GetVehicleRegistrationNumber returns Truck's reg num
 func (t *Truck) GetVehicleRegistrationNumber() string {
-	return t.Vehicle.GetVehicleRegistrationNumber()
+	return t.registrationNumber
 }
 
 // GetVehicleColor return color of the Truck
 func (t *Truck) GetVehicleColor() string {
-	return t.Vehicle.GetVehicleColor()
+	return t.color
 }
 
 // GetTicketDetails return color of the Truck
 func (t *Truck) GetTicketDetails() *ticket.Ticket {
-	return t.Vehicle.GetTicketDetails()
+	return t.ticket
+}
+
+// GetVehicleType return type of the vehicle
+func (t *Truck) GetVehicleType() Type {
+	return t.vehicleType
 }
